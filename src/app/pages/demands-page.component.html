@@ -1,0 +1,147 @@
+<div class="demands-container">
+  <aside class="sidebar">
+    <div class="logo">
+      <img src="/assets/svg/logo.svg" alt="Logo Sicoob" />
+    </div>
+    <button class="new-demand-btn">+ Nova Demanda</button>
+  </aside>
+  <main class="main-content">
+    <section class="demands-list">
+      <h2>Minhas Demandas</h2>
+      <div *ngIf="loading" class="loading">
+        <span class="loader"></span>
+        <p>Carregando demandas...</p>
+      </div>
+      <div *ngIf="!loading && demands.length === 0" class="no-demands">
+        <p>Nenhuma demanda encontrada.</p>
+        <button class="new-demand-btn">Criar sua primeira demanda</button>
+      </div>
+      <div *ngFor="let demand of demands" class="demand-card" [ngClass]="demand.status?.toLowerCase()">
+        <div class="demand-header">
+          <span class="demand-title">{{ demand.title }}</span>
+          <span class="demand-status" [ngClass]="demand.status?.toLowerCase()">{{ demand.status || 'OPEN' }}</span>
+        </div>
+        <div class="demand-desc">{{ demand.description }}</div>
+        <div class="demand-info">
+          <div class="demand-type">
+            <i class="fas fa-tag"></i>
+            <span>{{ demand.type }}</span>
+          </div>
+          <div class="demand-period">
+            <i class="fas fa-calendar"></i>
+            <span>
+              {{ demand.startDate | date:'dd/MM/yyyy HH:mm' }}
+              <ng-container *ngIf="demand.endDate"> - {{ demand.endDate | date:'dd/MM/yyyy HH:mm' }}</ng-container>
+            </span>
+          </div>
+        </div>
+        <div class="demand-actions">
+          <button class="action-btn edit" (click)="editDemand(demand)" title="Editar">
+            <i class="fas fa-edit"></i>
+            Editar
+          </button>
+          <button *ngIf="!demand.autoStart && demand.status === DemandStatus.OPEN" 
+                  class="action-btn start" 
+                  (click)="startDemand(demand.demandId)"
+                  title="Iniciar">
+            <i class="fas fa-play"></i>
+            Iniciar
+          </button>
+          <button *ngIf="demand.status !== DemandStatus.PAUSED && demand.status !== DemandStatus.CLOSED" 
+                  class="action-btn pause" 
+                  (click)="pauseDemand(demand.demandId)"
+                  title="Pausar">
+            <i class="fas fa-pause"></i>
+            Pausar
+          </button>
+          <button *ngIf="demand.status === DemandStatus.PAUSED" 
+                  class="action-btn continue" 
+                  (click)="continueDemand(demand.demandId)"
+                  title="Continuar">
+            <i class="fas fa-play"></i>
+            Continuar
+          </button>
+          <button *ngIf="demand.status !== DemandStatus.CLOSED" 
+                  class="action-btn close" 
+                  (click)="closeDemand(demand.demandId)"
+                  title="Finalizar">
+            <i class="fas fa-check"></i>
+            Finalizar
+          </button>
+          <button class="action-btn delete" 
+                  (click)="deleteDemand(demand.demandId)"
+                  title="Excluir">
+            <i class="fas fa-trash"></i>
+            Excluir
+          </button>
+        </div>
+      </div>
+    </section>
+    <section class="demand-form-section">
+      <form [formGroup]="demandForm" (ngSubmit)="onSubmit()" class="demand-form" [class.editing]="editingDemandId">
+        <h2>{{ editingDemandId ? 'Editar Demanda' : 'Criar Demanda' }}</h2>
+        
+        <div class="form-group">
+          <label for="title">Título</label>
+          <input id="title" formControlName="title" placeholder="Digite o título da demanda" />
+          <span class="error" *ngIf="demandForm.get('title')?.errors?.['required'] && demandForm.get('title')?.touched">
+            Título é obrigatório
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Descrição</label>
+          <textarea id="description" formControlName="description" placeholder="Digite a descrição da demanda" rows="4"></textarea>
+          <span class="error" *ngIf="demandForm.get('description')?.errors?.['required'] && demandForm.get('description')?.touched">
+            Descrição é obrigatória
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="type">Tipo</label>
+          <select id="type" formControlName="type">
+            <option value="">Selecione o tipo</option>
+            <option *ngFor="let type of demandTypes" [value]="type">{{ type | titlecase }}</option>
+          </select>
+          <span class="error" *ngIf="demandForm.get('type')?.errors?.['required'] && demandForm.get('type')?.touched">
+            Tipo é obrigatório
+          </span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="startDate">Data Início</label>
+            <input id="startDate" type="datetime-local" class="datetime-input" formControlName="startDate" />
+            <span class="error" *ngIf="demandForm.get('startDate')?.errors?.['required'] && demandForm.get('startDate')?.touched">
+              Data início é obrigatória
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label for="endDate">Data Fim</label>
+            <input id="endDate" type="datetime-local" class="datetime-input" formControlName="endDate" />
+            <span class="error" *ngIf="demandForm.get('endDate')?.errors?.['required'] && demandForm.get('endDate')?.touched">
+              Data fim é obrigatória
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group checkbox">
+          <label>
+            <input type="checkbox" formControlName="autoStart" />
+            Iniciar automaticamente?
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" [disabled]="demandForm.invalid" class="primary">
+            {{ editingDemandId ? 'Salvar Alterações' : 'Criar Demanda' }}
+          </button>
+          <button *ngIf="editingDemandId" type="button" class="secondary" (click)="cancelEdit()">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </section>
+  </main>
+</div>

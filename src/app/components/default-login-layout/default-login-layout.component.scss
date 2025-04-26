@@ -1,0 +1,129 @@
+@import "../../../styles/variables.scss";
+
+main {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: flex-start;
+    min-height: 100vh;
+    background-color: white;
+
+    section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .main-section {
+        flex-grow: 1;
+        background-color: $gray-bg;
+        padding: 2rem;
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    }
+
+    .form-section {
+        flex: 0 0 500px;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        img {
+            width: 180px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 45px;
+            color: $text-color;
+        }
+
+        .btn-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            gap: 30px;
+            margin-top: 1rem;
+
+            .divider {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 20px;
+                width: 100%;
+
+                font-size: 14px;
+                color: $gray-bg;
+                font-weight: 400;
+                text-transform: uppercase;
+
+                div {
+                    flex-grow: 1;
+                    height: 2px;
+                    background-color: $gray-bg;
+                }
+            }
+
+            button {
+                width: 100%;
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: 500;
+                border: none;
+                background: transparent;
+                padding: 12px 24px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+
+                &:disabled {
+                    opacity: 0.8;
+                    cursor: not-allowed;
+                }
+    
+                &.btn-primary {
+                    background-color: $primary-color;
+                    color: white;
+                    box-shadow: 0px 8px 12px rgba(126, 217, 87, 0.2);
+
+                    &:hover:not(:disabled) {
+                        background-color: darken($primary-color, 5%);
+                        transform: translateY(-1px);
+                    }
+                }
+    
+                &.btn-secondary {
+                    border: 1px solid $primary-color;
+                    color: $primary-color;
+
+                    &:hover {
+                        background: rgba(126, 217, 87, 0.1);
+                    }
+                }
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+
+        .form-section {
+            flex: 0 0 auto;
+            width: 100%;
+            order: 1;
+        }
+
+        .main-section {
+            display: none;
+        }
+    }
+}
