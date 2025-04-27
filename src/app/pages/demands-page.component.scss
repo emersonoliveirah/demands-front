@@ -1,3 +1,7 @@
+input, textarea, select {
+  box-sizing: border-box;
+}
+
 .demands-container {
   display: flex;
   min-height: 100vh;
@@ -315,12 +319,18 @@
 
     .form-row {
       display: flex;
+      flex-wrap: wrap; // linha add
       gap: 16px;
       position: relative;
 
       @media (max-width: 600px) {
         flex-direction: column;
       }
+
+      .form-row .form-group {
+        flex: 1 1 45%; // <- esse ajuste aqui
+        min-width: 200px; // <- e se quiser garantir
+      }      
 
       .form-group {
         flex: 1;
