@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Demand } from '../types/demand.type';
 
@@ -11,39 +11,49 @@ export class DemandService {
 
   constructor(private http: HttpClient) {}
 
-  getAllDemands(): Observable<Demand[]> {
-    return this.http.get<Demand[]>(this.apiUrl);
+  private getAuthHeaders() {
+    const token = sessionStorage.getItem('auth-token');
+    return {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      })
+    };
   }
 
-  getDemandsByUser(userId: string): Observable<Demand[]> {
-    return this.http.get<Demand[]>(`${this.apiUrl}/user/${userId}`);
+  getAllDemands(): Observable<Demand[]> {
+    return this.http.get<Demand[]>(this.apiUrl, this.getAuthHeaders());
+  }
+
+  getDemandsByUser(): Observable<Demand[]> {
+    return this.http.get<Demand[]>(this.apiUrl, this.getAuthHeaders());
   }
 
   createDemand(demand: Demand): Observable<any> {
-    return this.http.post(this.apiUrl, demand);
+    return this.http.post(this.apiUrl, demand, this.getAuthHeaders());
   }
 
   startDemand(demandId: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${demandId}/start`, {});
+    return this.http.put(`${this.apiUrl}/${demandId}/start`, {}, this.getAuthHeaders());
   }
 
   pauseDemand(demandId: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${demandId}/pause`, {});
+    return this.http.put(`${this.apiUrl}/${demandId}/pause`, {}, this.getAuthHeaders());
   }
 
   continueDemand(demandId: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${demandId}/continue`, {});
+    return this.http.put(`${this.apiUrl}/${demandId}/continue`, {}, this.getAuthHeaders());
   }
 
   closeDemand(demandId: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${demandId}/close`, {});
+    return this.http.put(`${this.apiUrl}/${demandId}/close`, {}, this.getAuthHeaders());
   }
 
   deleteDemand(demandId: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${demandId}`);
+    return this.http.delete(`${this.apiUrl}/${demandId}`, this.getAuthHeaders());
   }
 
   updateDemand(demand: Demand): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${demand.demandId}/update`, demand);
+    return this.http.put(`${this.apiUrl}/${demand.demandId}/update`, demand, this.getAuthHeaders());
   }
 } 

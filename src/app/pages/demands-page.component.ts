@@ -43,14 +43,14 @@ export class DemandsPageComponent implements OnInit {
 
   getDemands() {
     this.loading = true;
-    this.demandService.getDemandsByUser(this.userId).subscribe({
+    this.demandService.getDemandsByUser().subscribe({
       next: (demands) => { this.demands = demands; this.loading = false; },
       error: () => { this.loading = false; }
     });
   }
 
   onSubmit() {
-    if (this.demandForm.invalid || !this.userId) return;
+    if (this.demandForm.invalid) return;
     
     const formValue = this.demandForm.value;
     // Garantir que as datas tenham segundos
@@ -59,8 +59,6 @@ export class DemandsPageComponent implements OnInit {
     
     const demandData: Demand = {
       ...formValue,
-      userId: this.userId,
-      userIds: [this.userId],
       startDate,
       endDate,
       type: formValue.type as DemandType,
