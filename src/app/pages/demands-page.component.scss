@@ -14,7 +14,7 @@ input, textarea, select {
     display: flex;
     flex-direction: column;
     align-items: center;
-    
+
     @media (max-width: 768px) {
       width: 100%;
       position: fixed;
@@ -25,7 +25,7 @@ input, textarea, select {
       flex-direction: row;
       justify-content: space-between;
     }
-    
+
     .logo {
       width: 120px;
       margin-bottom: 32px;
@@ -123,19 +123,19 @@ input, textarea, select {
         font-size: 14px;
         font-weight: 500;
 
-        &.open { 
+        &.open {
           background: #e3f2fd;
           color: #1976d2;
         }
-        &.in_progress { 
+        &.in_progress {
           background: #fff3e0;
           color: #f57c00;
         }
-        &.paused { 
+        &.paused {
           background: #f3e5f5;
           color: #7b1fa2;
         }
-        &.closed { 
+        &.closed {
           background: #e8f5e9;
           color: #2e7d32;
         }
@@ -162,7 +162,7 @@ input, textarea, select {
         background: #f5f5f5;
         padding: 4px 12px;
         border-radius: 4px;
-        
+
         i {
           margin-right: 8px;
           color: #1976d2;
@@ -172,7 +172,7 @@ input, textarea, select {
       .demand-period {
         display: flex;
         align-items: center;
-        
+
         i {
           margin-right: 8px;
           color: #1976d2;
@@ -236,7 +236,7 @@ input, textarea, select {
 
   .demand-form-section {
     width: 400px;
-    
+
     @media (max-width: 1200px) {
       width: 100%;
     }
@@ -298,7 +298,7 @@ input, textarea, select {
       &.checkbox {
         display: flex;
         align-items: center;
-        
+
         input {
           width: auto;
           margin-right: 8px;
@@ -330,7 +330,7 @@ input, textarea, select {
       .form-row .form-group {
         flex: 1 1 45%; // <- esse ajuste aqui
         min-width: 200px; // <- e se quiser garantir
-      }      
+      }
 
       .form-group {
         flex: 1;
@@ -455,4 +455,119 @@ input, textarea, select {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+//Timerrr
+
+.floating-timer {
+  position: fixed;
+  top: 80px; // posição inicial
+  left: 80px;
+  background-color: #005E6B;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 50px;
+  box-shadow: 0 6px 12px rgba(0, 60, 68, 0.2);
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: move; // indica que é arrastável
+  z-index: 9999; // sobrepõe qualquer outra interface
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+.floating-timer:hover {
+  background-color: #004d57;
+}
+
+.floating-label {
+  font-size: 0.75rem;
+  font-weight: 400;
+  opacity: 0.85;
+  margin-top: 4px;
+}
+
+
+
+/* Estilo para o container dos controles do timer */
+.timer-controls {
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Estilo base do botão (estado normal) */
+.timer-controls button {
+  background-color: #75C044; /* $primary-color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 60, 68, 0.1);
+  width: fit-content;
+}
+
+/* Estado hover do botão */
+.timer-controls button:hover {
+  background-color: #5ea835;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 60, 68, 0.15);
+}
+
+/* Estado active (quando clicado) */
+.timer-controls button:active {
+  background-color: #4d8f2b;
+  transform: translateY(0);
+}
+
+/* Estilo quando o timer está rodando (botão muda para ação de parar) */
+.timer-controls button {
+  transition: all 0.3s ease;
+}
+
+/* Estilo do widget do timer */
+.timer-widget {
+  background-color: #F1F3F6; /* $gray-secondary-bg */
+  color: #003C44; /* $text-color */
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: inline-block;
+  width: fit-content;
+  box-shadow: 0 1px 2px rgba(0, 60, 68, 0.1);
+}
+
+/* Opcional: estilo para quando o botão está desabilitado */
+.timer-controls button:disabled {
+  background-color: #F1F3F6;
+  color: #005E6B;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+
+/* Estilo específico quando o timer está rodando (botão de parar) */
+.timer-controls button {
+  /* estilo base (iniciar) */
+  background-color: #75C044;
+}
+
+.timer-running .timer-controls button,
+.timer-controls button.timer-running {
+  background-color: #005E6B; /* $secondary-color para o estado "Parar" */
+}
+
+.timer-running .timer-controls button:hover,
+.timer-controls button.timer-running:hover {
+  background-color: #004d57; /* Tom mais escuro para hover */
 }

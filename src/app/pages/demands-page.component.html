@@ -1,7 +1,7 @@
 <div class="demands-container">
   <aside class="sidebar">
     <div class="logo">
-      <img src="/assets/svg/logo.svg" alt="Logo Sicoob" />
+      <img src="./assets/svg/logo.svg" alt="Logo Sicoob" />
     </div>
     <button class="new-demand-btn">+ Nova Demanda</button>
   </aside>
@@ -40,35 +40,35 @@
             <i class="fas fa-edit"></i>
             Editar
           </button>
-          <button *ngIf="!demand.autoStart && demand.status === DemandStatus.OPEN" 
-                  class="action-btn start" 
+          <button *ngIf="!demand.autoStart && demand.status === DemandStatus.OPEN"
+                  class="action-btn start"
                   (click)="startDemand(demand.demandId)"
                   title="Iniciar">
             <i class="fas fa-play"></i>
             Iniciar
           </button>
-          <button *ngIf="demand.status !== DemandStatus.PAUSED && demand.status !== DemandStatus.CLOSED" 
-                  class="action-btn pause" 
+          <button *ngIf="demand.status !== DemandStatus.PAUSED && demand.status !== DemandStatus.CLOSED"
+                  class="action-btn pause"
                   (click)="pauseDemand(demand.demandId)"
                   title="Pausar">
             <i class="fas fa-pause"></i>
             Pausar
           </button>
-          <button *ngIf="demand.status === DemandStatus.PAUSED" 
-                  class="action-btn continue" 
+          <button *ngIf="demand.status === DemandStatus.PAUSED"
+                  class="action-btn continue"
                   (click)="continueDemand(demand.demandId)"
                   title="Continuar">
             <i class="fas fa-play"></i>
             Continuar
           </button>
-          <button *ngIf="demand.status !== DemandStatus.CLOSED" 
-                  class="action-btn close" 
+          <button *ngIf="demand.status !== DemandStatus.CLOSED"
+                  class="action-btn close"
                   (click)="closeDemand(demand.demandId)"
                   title="Finalizar">
             <i class="fas fa-check"></i>
             Finalizar
           </button>
-          <button class="action-btn delete" 
+          <button class="action-btn delete"
                   (click)="deleteDemand(demand.demandId)"
                   title="Excluir">
             <i class="fas fa-trash"></i>
@@ -78,9 +78,51 @@
       </div>
     </section>
     <section class="demand-form-section">
+
+      <!-- // Timer -->
+
+      <div
+        *ngIf="timerRunning"
+        class="floating-timer"
+        [ngStyle]="{ top: floatingTimerPosition.top + 'px', left: floatingTimerPosition.left + 'px' }"
+        (mousedown)="startDrag($event)"
+        (document:mousemove)="onDrag($event)"
+        (document:mouseup)="stopDrag($event)"
+      >
+        ⏱ {{ elapsedTime / 1000 | number:'1.0-0' }}s
+        <span class="floating-label">Clique para encerrar</span>
+      </div>
+
+
+      <!-- Controles normais do timer -->
+      <div class="timer-controls" *ngIf="!timerRunning">
+        <button (click)="startTimer()">
+          Iniciar Demanda com Timer
+        </button>
+      </div>
+
+<!--      &lt;!&ndash; Botão flutuante enquanto o timer está rodando &ndash;&gt;-->
+<!--      <div *ngIf="timerRunning" class="floating-timer" (click)="stopTimerAndFillEndTime()">-->
+<!--        ⏱ {{ elapsedTime / 1000 | number:'1.0-0' }}s-->
+<!--        <span class="floating-label">Clique para encerrar</span>-->
+<!--      </div>-->
+
+
+      <!--      <div class="timer-controls">-->
+<!--        <button [class.timer-running]="timerRunning" (click)="timerRunning ? stopTimerAndFillEndTime() : startTimer()">-->
+<!--          {{ timerRunning ? 'Parar e Preencher Horário' : 'Iniciar Demanda com Timer' }}-->
+<!--        </button>-->
+
+<!--        <div *ngIf="timerRunning" class="timer-widget">-->
+<!--          Tempo decorrido: {{ elapsedTime / 1000 | number:'1.0-0' }}s-->
+<!--        </div>-->
+<!--      </div>-->
+
+      <!-- //Timer -->
+
       <form [formGroup]="demandForm" (ngSubmit)="onSubmit()" class="demand-form" [class.editing]="editingDemandId">
         <h2>{{ editingDemandId ? 'Editar Demanda' : 'Criar Demanda' }}</h2>
-        
+
         <div class="form-group">
           <label for="title">Título</label>
           <input id="title" formControlName="title" placeholder="Digite o título da demanda" />

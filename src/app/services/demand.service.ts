@@ -56,4 +56,4 @@ export class DemandService {
   updateDemand(demand: Demand): Observable<any> {
     return this.http.put(`${this.apiUrl}/${demand.demandId}/update`, demand, this.getAuthHeaders());
   }
-} 
+}

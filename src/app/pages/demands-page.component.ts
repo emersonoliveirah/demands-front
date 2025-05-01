@@ -21,6 +21,18 @@ export class DemandsPageComponent implements OnInit {
   DemandStatus = DemandStatus;
   userId = sessionStorage.getItem('username') || '';
 
+  // ⬇️ Timer-related variables
+  timerRunning = false;
+  timerStartTime?: Date;
+  elapsedTime = 0;
+  timerInterval?: any;
+  dragging = false;
+  dragStartTime: number = 0;
+  dragThreshold = 5; // pixels
+  dragOffsetX = 0;
+  dragOffsetY = 0;
+  floatingTimerPosition = { top: 80, left: 80 };
+
   constructor(private demandService: DemandService, private fb: FormBuilder) {
     this.demandForm = this.fb.group({
       title: ['', Validators.required],
@@ -51,12 +63,12 @@ export class DemandsPageComponent implements OnInit {
 
   onSubmit() {
     if (this.demandForm.invalid) return;
-    
+
     const formValue = this.demandForm.value;
     // Garantir que as datas tenham segundos
     const startDate = formValue.startDate.length === 16 ? formValue.startDate + ':00' : formValue.startDate;
     const endDate = formValue.endDate.length === 16 ? formValue.endDate + ':00' : formValue.endDate;
-    
+
     const demandData: Demand = {
       ...formValue,
       startDate,
@@ -139,5 +151,95 @@ export class DemandsPageComponent implements OnInit {
         console.error('Erro ao iniciar demanda:', error);
       }
     });
+  }
+
+  //Timer related:
+
+
+  startTimer() {
+    this.timerStartTime = new Date();
+    this.timerRunning = true;
+
+    // Preenche o campo de início no formulário automaticamente
+    const startDateStr = this.formatDateForInput(this.timerStartTime);
+    this.demandForm.patchValue({ startDate: startDateStr });
+
+    // Timer para exibir tempo decorrido
+    this.timerInterval = setInterval(() => {
+      this.elapsedTime = new Date().getTime() - this.timerStartTime!.getTime();
+    }, 1000);
+  }
+
+  stopTimerAndFillEndTime() {
+    if (!this.timerRunning) return;
+
+    const endTime = new Date();
+    const endDateStr = this.formatDateForInput(endTime);
+
+    this.demandForm.patchValue({ endDate: endDateStr });
+
+    clearInterval(this.timerInterval);
+    this.timerRunning = false;
+    this.elapsedTime = 0;
+  }
+
+  private formatDateForInput(date: Date): string {
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    const yyyy = date.getFullYear();
+    const mm = pad(date.getMonth() + 1);
+    const dd = pad(date.getDate());
+    const hh = pad(date.getHours());
+    const min = pad(date.getMinutes());
+    return `${yyyy}-${mm}-${dd}T${hh}:${min}`; // compatível com input type="datetime-local"
+  }
+
+  //Draggg
+
+  startDrag(event: MouseEvent) {
+    this.dragging = true;
+    this.dragStartTime = performance.now();
+
+    const el = event.target as HTMLElement;
+    this.floatingTimerPosition.left = el.offsetLeft;
+    this.floatingTimerPosition.top = el.offsetTop;
+
+    this.dragOffsetX = event.clientX - this.floatingTimerPosition.left;
+    this.dragOffsetY = event.clientY - this.floatingTimerPosition.top;
+  }
+
+  onDrag(event: Event): void {
+    const mouseEvent = event as MouseEvent;
+    if (this.dragging) {
+      const newLeft = mouseEvent.clientX - this.dragOffsetX;
+      const newTop = mouseEvent.clientY - this.dragOffsetY;
+
+      this.floatingTimerPosition.left = newLeft;
+      this.floatingTimerPosition.top = newTop;
+
+      const el = document.querySelector('.floating-timer') as HTMLElement;
+      if (el) {
+        el.style.left = `${newLeft}px`;
+        el.style.top = `${newTop}px`;
+      }
+    }
+  }
+
+
+  stopDrag(event: Event) {
+    const mouseEvent = event as MouseEvent;
+
+    if (this.dragging) {
+      const timeHeld = performance.now() - this.dragStartTime;
+      const moved =
+        Math.abs(mouseEvent.movementX) > this.dragThreshold ||
+        Math.abs(mouseEvent.movementY) > this.dragThreshold;
+
+      this.dragging = false;
+
+      // Se o mouse não foi arrastado de fato, consideramos um clique
+      if (!moved && timeHeld < 200) {
+        this.stopTimerAndFillEndTime();
+      }
+    }
   }
 }
