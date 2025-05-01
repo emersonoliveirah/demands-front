@@ -1,0 +1,57 @@
+<!-- dist/login-page/browser/timer.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Timer</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 8px 12px;
+      background-color: rgba(0, 94, 107, 0.9);
+      color: white;
+      font-family: sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    .label {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-top: 4px;
+    }
+
+    body:hover {
+      cursor: pointer;
+      background-color: rgba(0, 77, 87, 0.9);
+    }
+  </style>
+</head>
+<body onclick="stopTimer()">
+⏱ <span id="time">0s</span>
+<div class="label">Clique para encerrar</div>
+
+<script>
+  let start = Date.now();
+
+  const updateTime = () => {
+    const elapsed = Math.floor((Date.now() - start) / 1000);
+    document.getElementById('time').textContent = `${elapsed}s`;
+  };
+
+  const interval = setInterval(updateTime, 1000);
+
+  function stopTimer() {
+    clearInterval(interval);
+    window.electronAPI?.stopTimerWindow(); // envia para o main.js encerrar
+  }
+</script>
+</body>
+</html>
