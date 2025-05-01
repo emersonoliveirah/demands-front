@@ -1,57 +1,159 @@
-<!-- dist/login-page/browser/timer.html -->
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8" />
   <title>Timer</title>
   <style>
-    body {
+    html, body {
       margin: 0;
-      padding: 8px 12px;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: transparent;
+    }
+
+    #draggable {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background-color: rgba(0, 94, 107, 0.9);
       color: white;
       font-family: sans-serif;
       font-size: 14px;
       font-weight: 600;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       user-select: none;
+      -webkit-app-region: drag;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      transition: background-color 0.4s ease, transform 0.3s ease;
     }
 
-    .label {
-      font-size: 12px;
-      opacity: 0.8;
-      margin-top: 4px;
+    #draggable.starting {
+      background-color: rgba(0, 150, 0, 0.9);
+      transform: scale(1.02);
     }
 
-    body:hover {
+    #draggable.stopping {
+      background-color: rgba(150, 0, 0, 0.9);
+      transform: scale(0.98);
+    }
+
+    #clickable-area {
+      -webkit-app-region: no-drag;
       cursor: pointer;
-      background-color: rgba(0, 77, 87, 0.9);
+      padding: 10px;
+      border-radius: 10px;
+      background-color: rgba(0, 0, 0, 0.3);
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    #time {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    #stop-button {
+      background-color: #e0e0e0;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #stop-button:hover {
+      background-color: #ff4d4d;
+    }
+
+
+    #stop-button:active {
+      background-color: #ccc;
+      transform: scale(0.97);
+    }
+
+    #stop-button.flash {
+      animation: flash-red 0.5s ease;
+    }
+
+    @keyframes flash-red {
+      0% { background-color: #ff4d4d; color: white; }
+      100% { background-color: rgba(255, 255, 255, 0.85); color: #003f4f; }
     }
   </style>
 </head>
-<body onclick="stopTimer()">
-⏱ <span id="time">0s</span>
-<div class="label">Clique para encerrar</div>
-
+<body>
+<div id="draggable">
+  <div id="clickable-area">
+    ⏱ <div id="time">00:00</div>
+    <button id="stop-button">Parar o Timer</button>
+  </div>
+</div>
 <script>
   let start = Date.now();
+  startTimerVisualFeedback(); // ⬅️ Chamada adicionada aqui
 
-  const updateTime = () => {
+  function formatElapsedTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+  }
+
+  let interval = setInterval(() => {
     const elapsed = Math.floor((Date.now() - start) / 1000);
-    document.getElementById('time').textContent = `${elapsed}s`;
-  };
+    document.getElementById('time').textContent = formatElapsedTime(elapsed);
+  }, 1000);
 
-  const interval = setInterval(updateTime, 1000);
+  function stopTimerVisualFeedback() {
+    const el = document.getElementById('draggable');
+    const button = document.getElementById('stop-button');
+
+    if (el) {
+      el.classList.add('stopping');
+      setTimeout(() => el.classList.remove('stopping'), 800);
+    }
+
+    if (button) {
+      button.classList.add('flash');
+      setTimeout(() => button.classList.remove('flash'), 500);
+    }
+  }
+
+  function startTimerVisualFeedback() {
+    const el = document.getElementById('draggable');
+    if (el) {
+      el.classList.add('starting');
+      setTimeout(() => el.classList.remove('starting'), 800);
+    }
+  }
 
   function stopTimer() {
     clearInterval(interval);
-    window.electronAPI?.stopTimerWindow(); // envia para o main.js encerrar
+
+    const startTime = new Date(start).toISOString();
+    const endTime = new Date().toISOString();
+
+    if (window.electronAPI?.submitTimerData) {
+      window.electronAPI.submitTimerData({ startTime, endTime });
+    }
+
+    if (window.electronAPI?.stopTimerWindow) {
+      window.electronAPI.stopTimerWindow();
+    }
+
+    stopTimerVisualFeedback();
   }
+
+  document.getElementById('stop-button').addEventListener('click', stopTimer);
 </script>
 </body>
 </html>

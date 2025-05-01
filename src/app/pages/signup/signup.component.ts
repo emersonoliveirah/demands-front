@@ -50,7 +50,7 @@ export class SignUpComponent {
     })
   }
 
-  navigate(){
-    this.router.navigate(["login"])
+  navigateToLogin() {
+    this.router.navigate(['/']);
   }
 }

@@ -26,12 +26,7 @@ export class DemandsPageComponent implements OnInit {
   timerStartTime?: Date;
   elapsedTime = 0;
   timerInterval?: any;
-  dragging = false;
-  dragStartTime: number = 0;
-  dragThreshold = 5; // pixels
-  dragOffsetX = 0;
-  dragOffsetY = 0;
-  floatingTimerPosition = { top: 80, left: 80 };
+
 
   constructor(private demandService: DemandService, private fb: FormBuilder) {
     this.demandForm = this.fb.group({
@@ -47,11 +42,27 @@ export class DemandsPageComponent implements OnInit {
   ngOnInit() {
     if (!this.userId) {
       console.error('Usuário não está logado');
-      // Aqui você pode redirecionar para a página de login se desejar
       return;
     }
+
     this.getDemands();
+
+    // 🔁 Listener que recebe os dados do timer flutuante
+    (window as any).electronAPI?.receiveTimerData?.((event: any, data: any) => {
+      console.log('⏱️ Dados do Electron recebidos:', data);
+
+      this.demandForm.patchValue({
+        startDate: this.formatDateForInput(new Date(data.startTime)),
+        endDate: this.formatDateForInput(new Date(data.endTime)),
+      });
+
+      // Atualiza estado do timer local também, se quiser
+      this.timerRunning = false;
+      clearInterval(this.timerInterval);
+      this.elapsedTime = 0;
+    });
   }
+
 
   getDemands() {
     this.loading = true;
@@ -155,10 +166,18 @@ export class DemandsPageComponent implements OnInit {
 
   //Timer related:
 
-
   startTimer() {
     this.timerStartTime = new Date();
     this.timerRunning = true;
+
+    if ((window as any).electronAPI?.startTimerWindow) {
+      (window as any).electronAPI.startTimerWindow();
+    } else {
+      console.error('Electron API is not available.');
+    }
+
+    // Add visual feedback
+    this.startTimerVisualFeedback();
 
     // Preenche o campo de início no formulário automaticamente
     const startDateStr = this.formatDateForInput(this.timerStartTime);
@@ -168,6 +187,22 @@ export class DemandsPageComponent implements OnInit {
     this.timerInterval = setInterval(() => {
       this.elapsedTime = new Date().getTime() - this.timerStartTime!.getTime();
     }, 1000);
+  }
+
+  private startTimerVisualFeedback() {
+    const draggableElement = document.getElementById('draggable');
+    if (draggableElement) {
+      draggableElement.classList.add('starting');
+      setTimeout(() => draggableElement.classList.remove('starting'), 500);
+    }
+  }
+
+  private stopTimerVisualFeedback() {
+    const draggableElement = document.getElementById('draggable');
+    if (draggableElement) {
+      draggableElement.classList.add('stopping');
+      setTimeout(() => draggableElement.classList.remove('stopping'), 500);
+    }
   }
 
   stopTimerAndFillEndTime() {
@@ -181,6 +216,11 @@ export class DemandsPageComponent implements OnInit {
     clearInterval(this.timerInterval);
     this.timerRunning = false;
     this.elapsedTime = 0;
+
+    (window as any).electronAPI?.stopTimerWindow();
+
+    // Add visual feedback
+    this.stopTimerVisualFeedback();
   }
 
   private formatDateForInput(date: Date): string {
@@ -191,55 +231,5 @@ export class DemandsPageComponent implements OnInit {
     const hh = pad(date.getHours());
     const min = pad(date.getMinutes());
     return `${yyyy}-${mm}-${dd}T${hh}:${min}`; // compatível com input type="datetime-local"
-  }
-
-  //Draggg
-
-  startDrag(event: MouseEvent) {
-    this.dragging = true;
-    this.dragStartTime = performance.now();
-
-    const el = event.target as HTMLElement;
-    this.floatingTimerPosition.left = el.offsetLeft;
-    this.floatingTimerPosition.top = el.offsetTop;
-
-    this.dragOffsetX = event.clientX - this.floatingTimerPosition.left;
-    this.dragOffsetY = event.clientY - this.floatingTimerPosition.top;
-  }
-
-  onDrag(event: Event): void {
-    const mouseEvent = event as MouseEvent;
-    if (this.dragging) {
-      const newLeft = mouseEvent.clientX - this.dragOffsetX;
-      const newTop = mouseEvent.clientY - this.dragOffsetY;
-
-      this.floatingTimerPosition.left = newLeft;
-      this.floatingTimerPosition.top = newTop;
-
-      const el = document.querySelector('.floating-timer') as HTMLElement;
-      if (el) {
-        el.style.left = `${newLeft}px`;
-        el.style.top = `${newTop}px`;
-      }
-    }
-  }
-
-
-  stopDrag(event: Event) {
-    const mouseEvent = event as MouseEvent;
-
-    if (this.dragging) {
-      const timeHeld = performance.now() - this.dragStartTime;
-      const moved =
-        Math.abs(mouseEvent.movementX) > this.dragThreshold ||
-        Math.abs(mouseEvent.movementY) > this.dragThreshold;
-
-      this.dragging = false;
-
-      // Se o mouse não foi arrastado de fato, consideramos um clique
-      if (!moved && timeHeld < 200) {
-        this.stopTimerAndFillEndTime();
-      }
-    }
   }
 }

@@ -81,18 +81,17 @@
 
       <!-- // Timer -->
 
-      <div
-        *ngIf="timerRunning"
-        class="floating-timer"
-        [ngStyle]="{ top: floatingTimerPosition.top + 'px', left: floatingTimerPosition.left + 'px' }"
-        (mousedown)="startDrag($event)"
-        (document:mousemove)="onDrag($event)"
-        (document:mouseup)="stopDrag($event)"
-      >
-        ⏱ {{ elapsedTime / 1000 | number:'1.0-0' }}s
-        <span class="floating-label">Clique para encerrar</span>
-      </div>
-
+<!--      <div-->
+<!--        *ngIf="timerRunning"-->
+<!--        class="floating-timer"-->
+<!--        [ngStyle]="{ top: floatingTimerPosition.top + 'px', left: floatingTimerPosition.left + 'px' }"-->
+<!--        (mousedown)="startDrag($event)"-->
+<!--        (document:mousemove)="onDrag($event)"-->
+<!--        (document:mouseup)="stopDrag($event)"-->
+<!--      >-->
+<!--        ⏱ {{ elapsedTime / 1000 | number:'1.0-0' }}s-->
+<!--        <span class="floating-label">Clique para encerrar</span>-->
+<!--      </div>-->
 
       <!-- Controles normais do timer -->
       <div class="timer-controls" *ngIf="!timerRunning">
