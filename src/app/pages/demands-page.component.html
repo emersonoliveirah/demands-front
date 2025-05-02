@@ -94,10 +94,12 @@
 <!--      </div>-->
 
       <!-- Controles normais do timer -->
-      <div class="timer-controls" *ngIf="!timerRunning">
-        <button (click)="startTimer()">
-          Iniciar Demanda com Timer
-        </button>
+      <div class="timer-controls-container">
+        <div class="timer-controls" *ngIf="!timerRunning">
+          <button (click)="startTimer()">
+            Iniciar Demanda com Timer
+          </button>
+        </div>
       </div>
 
 <!--      &lt;!&ndash; Botão flutuante enquanto o timer está rodando &ndash;&gt;-->

@@ -547,27 +547,13 @@ input, textarea, select {
   box-shadow: 0 1px 2px rgba(0, 60, 68, 0.1);
 }
 
-/* Opcional: estilo para quando o botão está desabilitado */
-.timer-controls button:disabled {
-  background-color: #F1F3F6;
-  color: #005E6B;
-  cursor: not-allowed;
-  opacity: 0.7;
+.timer-controls-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
-
-
-/* Estilo específico quando o timer está rodando (botão de parar) */
 .timer-controls button {
-  /* estilo base (iniciar) */
-  background-color: #75C044;
-}
-
-.timer-running .timer-controls button,
-.timer-controls button.timer-running {
-  background-color: #005E6B; /* $secondary-color para o estado "Parar" */
-}
-
-.timer-running .timer-controls button:hover,
-.timer-controls button.timer-running:hover {
-  background-color: #004d57; /* Tom mais escuro para hover */
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
 }
