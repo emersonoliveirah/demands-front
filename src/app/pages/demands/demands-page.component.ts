@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { DemandService } from '../services/demand.service';
-import { Demand, DemandType, DemandStatus } from '../types/demand.type';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { DemandService } from '../../services/demand.service';
+import { Demand, DemandType, DemandStatus } from '../../types/demand.type';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-demands-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './demands-page.component.html',
   styleUrl: './demands-page.component.scss',
   providers: [DemandService]
@@ -15,6 +15,8 @@ import { CommonModule } from '@angular/common';
 export class DemandsPageComponent implements OnInit {
   demands: Demand[] = [];
   demandForm: FormGroup;
+  filteredDemands: Demand[] = [];
+  searchTerm: string = '';
   loading = false;
   editingDemandId?: string = undefined;
   demandTypes = Object.values(DemandType);
@@ -64,12 +66,25 @@ export class DemandsPageComponent implements OnInit {
   }
 
 
-  getDemands() {
+  getDemands(): void {
     this.loading = true;
     this.demandService.getDemandsByUser().subscribe({
-      next: (demands) => { this.demands = demands; this.loading = false; },
-      error: () => { this.loading = false; }
+      next: (data) => {
+        this.demands = data;
+        this.filteredDemands = data;
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      }
     });
+  }
+
+  filterDemands(): void {
+    this.filteredDemands = this.demands.filter((demand) =>
+      demand.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      demand.description.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
   }
 
   onSubmit() {

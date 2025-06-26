@@ -56,4 +56,7 @@ export class DemandService {
   updateDemand(demand: Demand): Observable<any> {
     return this.http.put(`${this.apiUrl}/${demand.demandId}/update`, demand, this.getAuthHeaders());
   }
+  getAllDemandsWithToken(): Observable<Demand[]> {
+    return this.http.get<Demand[]>(`${this.apiUrl}/all`, this.getAuthHeaders());
+  }
 }

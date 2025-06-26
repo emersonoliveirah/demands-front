@@ -8,15 +8,23 @@
   <main class="main-content">
     <section class="demands-list">
       <h2>Minhas Demandas</h2>
+<!--      <div class="search-bar">-->
+<!--        <input-->
+<!--          type="text"-->
+<!--          placeholder="Pesquisar demandas..."-->
+<!--          [(ngModel)]="searchTerm"-->
+<!--          (input)="filterDemands()"-->
+<!--        />-->
+<!--      </div>-->
       <div *ngIf="loading" class="loading">
         <span class="loader"></span>
         <p>Carregando demandas...</p>
       </div>
-      <div *ngIf="!loading && demands.length === 0" class="no-demands">
+      <div *ngIf="!loading && filteredDemands.length === 0" class="no-demands">
         <p>Nenhuma demanda encontrada.</p>
         <button class="new-demand-btn">Criar sua primeira demanda</button>
       </div>
-      <div *ngFor="let demand of demands" class="demand-card" [ngClass]="demand.status?.toLowerCase()">
+      <div *ngFor="let demand of filteredDemands" class="demand-card" [ngClass]="demand.status?.toLowerCase()">
         <div class="demand-header">
           <span class="demand-title">{{ demand.title }}</span>
           <span class="demand-status" [ngClass]="demand.status?.toLowerCase()">{{ demand.status || 'OPEN' }}</span>
