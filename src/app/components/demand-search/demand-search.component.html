@@ -1,0 +1,24 @@
+<div>
+  <input
+    type="text"
+    placeholder="Search demands..."
+    [(ngModel)]="searchTerm"
+    class="search-input"
+  />
+</div>
+
+<div *ngIf="filterDemands().length > 0; else noResults">
+  <ul>
+    <li *ngFor="let demand of filterDemands()">
+      <strong>ID:</strong> {{ demand.demandId }} |
+      <strong>Status:</strong> {{ demand.status }} |
+      <strong>Name:</strong> {{ demand.name }} |
+      <strong>Description:</strong> {{ demand.description }} |
+      <strong>Owner:</strong> {{ demand.ownerName }} ({{ demand.ownerId }})
+    </li>
+  </ul>
+</div>
+
+<ng-template #noResults>
+  <p>No demands found.</p>
+</ng-template>
