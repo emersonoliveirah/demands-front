@@ -6,7 +6,7 @@
     (submit)="submit()"
     [disablePrimaryBtn]="!signupForm.valid"
 >
-    <form [formGroup]="signupForm">
+    <form [formGroup]="signupForm" (keydown.enter)="submit()">
         <app-primary-input
             formControlName="name"
             inputName="name"

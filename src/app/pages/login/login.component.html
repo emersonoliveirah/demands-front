@@ -6,7 +6,7 @@
     (navigate)="navigate()"
     [disablePrimaryBtn]="!loginForm.valid"
 >
-    <form [formGroup]="loginForm">
+    <form [formGroup]="loginForm" (keydown.enter)="submit()">
         <app-primary-input
             formControlName="email"
             inputName="email"
