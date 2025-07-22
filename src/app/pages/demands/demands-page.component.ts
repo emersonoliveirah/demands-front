@@ -3,11 +3,12 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } 
 import { DemandService } from '../../services/demand.service';
 import { Demand, DemandType, DemandStatus } from '../../types/demand.type';
 import { CommonModule } from '@angular/common';
+import {DemandSearchComponent} from "../../components/demand-search/demand-search.component";
 
 @Component({
   selector: 'app-demands-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, DemandSearchComponent],
   templateUrl: './demands-page.component.html',
   styleUrl: './demands-page.component.scss',
   providers: [DemandService]
