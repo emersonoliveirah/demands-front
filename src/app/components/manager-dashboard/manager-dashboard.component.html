@@ -1,0 +1,72 @@
+<div class="manager-dashboard">
+  <h1>Dashboard do Manager</h1>
+
+  <!-- Indicador de Carregamento dos Subordinados -->
+  <div *ngIf="loadingSubordinates" class="loading">
+    <p>Carregando subordinados...</p>
+  </div>
+
+  <!-- Mensagem de Erro no Carregamento dos Subordinados -->
+  <div *ngIf="errorLoadingSubordinates && !loadingSubordinates" class="error">
+    <p>Erro: {{ errorLoadingSubordinates }}</p>
+    <button (click)="loadSubordinates()">Tentar Novamente</button>
+  </div>
+
+  <!-- Conteúdo Principal (somente se não estiver carregando subordinados e não houver erro) -->
+  <div *ngIf="!loadingSubordinates && !errorLoadingSubordinates">
+
+    <h2>Seus Subordinados Diretos</h2>
+    <div *ngIf="subordinatesWithState && subordinatesWithState.length > 0; else noSubordinates">
+      <div *ngFor="let subordinate of subordinatesWithState" class="subordinate-section">
+        <h3>{{ subordinate.name }} ({{ subordinate.email }})</h3>
+
+        <!-- Botão para carregar demandas -->
+        <button
+          class="load-demands"
+          (click)="loadDemandsForSubordinate(subordinate.id)"
+          [disabled]="subordinate.loadingDemands"
+          *ngIf="!subordinate.demands && !subordinate.errorLoadingDemands">
+          {{ subordinate.loadingDemands ? 'Carregando...' : 'Carregar Demandas' }}
+        </button>
+
+        <!-- Botão para limpar demandas (opcional) -->
+        <button
+          class="clear-demands"
+          (click)="clearDemandsForSubordinate(subordinate.id)"
+          *ngIf="subordinate.demands || subordinate.errorLoadingDemands">
+          Limpar Demandas
+        </button>
+
+        <!-- Indicador de Carregamento das Demandas -->
+        <div *ngIf="subordinate.loadingDemands" class="loading-demands">
+          <p>Carregando demandas de {{ subordinate.name }}...</p>
+        </div>
+
+        <!-- Mensagem de Erro no Carregamento das Demandas -->
+        <div *ngIf="subordinate.errorLoadingDemands && !subordinate.loadingDemands" class="error-demands">
+          <p>Erro ao carregar demandas de {{ subordinate.name }}: {{ subordinate.errorLoadingDemands }}</p>
+          <button (click)="reloadDemandsForSubordinate(subordinate.id)">Tentar Novamente</button>
+        </div>
+
+        <!-- Exibição das Demandas (somente se carregadas e sem erro) -->
+        <div *ngIf="subordinate.demands && !subordinate.loadingDemands && !subordinate.errorLoadingDemands">
+          <h4>Demandas de {{ subordinate.name }}:</h4>
+          <div *ngIf="subordinate.demands.length > 0; else noDemandsForSubordinate">
+            <ul>
+              <li *ngFor="let demand of subordinate.demands">
+                <strong>{{ demand.title }}</strong> - Status: {{ demand.status }}
+                <!-- Adicione mais detalhes da demanda conforme necessário -->
+              </li>
+            </ul>
+          </div>
+          <ng-template #noDemandsForSubordinate>
+            <p>{{ subordinate.name }} não possui demandas.</p>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+    <ng-template #noSubordinates>
+      <p>Você não tem subordinados diretos.</p>
+    </ng-template>
+  </div>
+</div>
