@@ -22,7 +22,7 @@ function createWindow() {
   });
 
   mainWindow.loadURL(indexPath);
-  // mainWindow.webContents.openDevTools(); // Open DevTools for debugging
+  mainWindow.webContents.openDevTools(); // Open DevTools for debugging
 
   mainWindow.on('closed', () => {
     mainWindow = null;

@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { DemandService } from '../../services/demand.service';
 import { Demand } from '../../types/demand.type';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-demand-search',
-  templateUrl: './demand-search.component.html',
   standalone: true,
-  styleUrls: ['./demand-search.component.css']
+  imports: [CommonModule, FormsModule],
+  templateUrl: './demand-search.component.html',
+  styleUrls: ['./demand-search.component.scss'],
 })
 export class DemandSearchComponent implements OnInit {
   demands: Demand[] = [];

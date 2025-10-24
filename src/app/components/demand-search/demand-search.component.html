@@ -12,9 +12,9 @@
     <li *ngFor="let demand of filterDemands()">
       <strong>ID:</strong> {{ demand.demandId }} |
       <strong>Status:</strong> {{ demand.status }} |
-      <strong>Name:</strong> {{ demand.name }} |
+      <strong>Title:</strong> {{ demand.title }} |
       <strong>Description:</strong> {{ demand.description }} |
-      <strong>Owner:</strong> {{ demand.ownerName }} ({{ demand.ownerId }})
+      <strong>User:</strong> {{ demand.userId }}
     </li>
   </ul>
 </div>

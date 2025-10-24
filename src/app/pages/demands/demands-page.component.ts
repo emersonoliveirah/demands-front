@@ -4,6 +4,8 @@ import { DemandService } from '../../services/demand.service';
 import { Demand, DemandType, DemandStatus } from '../../types/demand.type';
 import { CommonModule } from '@angular/common';
 import {DemandSearchComponent} from "../../components/demand-search/demand-search.component";
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-demands-page',
@@ -22,7 +24,7 @@ export class DemandsPageComponent implements OnInit {
   editingDemandId?: string = undefined;
   demandTypes = Object.values(DemandType);
   DemandStatus = DemandStatus;
-  userId = sessionStorage.getItem('username') || '';
+  userId = sessionStorage.getItem('userId') || '';
 
   // ⬇️ Timer-related variables
   timerRunning = false;
@@ -31,7 +33,7 @@ export class DemandsPageComponent implements OnInit {
   timerInterval?: any;
 
 
-  constructor(private demandService: DemandService, private fb: FormBuilder) {
+  constructor(private demandService: DemandService, private fb: FormBuilder, private router: Router) {
     this.demandForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
@@ -43,23 +45,14 @@ export class DemandsPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (!this.userId) {
-      console.error('Usuário não está logado');
-      return;
-    }
-
     this.getDemands();
 
-    // 🔁 Listener que recebe os dados do timer flutuante
+    // Listener for Electron timer data
     (window as any).electronAPI?.receiveTimerData?.((event: any, data: any) => {
-      console.log('⏱️ Dados do Electron recebidos:', data);
-
       this.demandForm.patchValue({
         startDate: this.formatDateForInput(new Date(data.startTime)),
         endDate: this.formatDateForInput(new Date(data.endTime)),
       });
-
-      // Atualiza estado do timer local também, se quiser
       this.timerRunning = false;
       clearInterval(this.timerInterval);
       this.elapsedTime = 0;
@@ -163,9 +156,20 @@ export class DemandsPageComponent implements OnInit {
 
   deleteDemand(demandId?: string) {
     if (!demandId) return;
-    this.demandService.deleteDemand(demandId).subscribe({
-      next: () => this.getDemands()
-    });
+
+    if (confirm('Are you sure you want to delete this demand?')) {
+      this.demandService.deleteDemand(demandId).subscribe({
+        next: () => {
+          console.log(`Demand with ID ${demandId} deleted successfully.`);
+          // Remove the deleted demand from the local array
+          this.demands = this.demands.filter(demand => demand.demandId !== demandId);
+          this.filteredDemands = this.filteredDemands.filter(demand => demand.demandId !== demandId);
+        },
+        error: (error) => {
+          console.error(`Error deleting demand with ID ${demandId}:`, error);
+        }
+      });
+    }
   }
 
   startDemand(demandId?: string) {
@@ -233,9 +237,12 @@ export class DemandsPageComponent implements OnInit {
     this.timerRunning = false;
     this.elapsedTime = 0;
 
-    (window as any).electronAPI?.stopTimerWindow();
+    if ((window as any).electronAPI?.stopTimerWindow) {
+      (window as any).electronAPI.stopTimerWindow();
+    } else {
+      console.error('Electron API is not available.');
+    }
 
-    // Add visual feedback
     this.stopTimerVisualFeedback();
   }
 
@@ -247,5 +254,9 @@ export class DemandsPageComponent implements OnInit {
     const hh = pad(date.getHours());
     const min = pad(date.getMinutes());
     return `${yyyy}-${mm}-${dd}T${hh}:${min}`; // compatível com input type="datetime-local"
+  }
+
+  navigateToManagerDashboard(): void {
+    this.router.navigate(['/manager-dashboard']);
   }
 }

@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Demand } from '../types/demand.type';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DemandService {
-  private apiUrl = 'http://localhost:8080/demands';
+  private apiUrl = `${environment.apiBaseUrl}/demands`;
 
   constructor(private http: HttpClient) {}
 
@@ -56,6 +57,7 @@ export class DemandService {
   updateDemand(demand: Demand): Observable<any> {
     return this.http.put(`${this.apiUrl}/${demand.demandId}/update`, demand, this.getAuthHeaders());
   }
+
   getAllDemandsWithToken(): Observable<Demand[]> {
     return this.http.get<Demand[]>(`${this.apiUrl}/all`, this.getAuthHeaders());
   }

@@ -1,46 +1,55 @@
+<!-- src/app/pages/signup/signup.component.html -->
 <app-default-login-layout
-    title="Registre sua conta para começar!"
-    primaryBtnText="Registrar Agora"
-    secondaryBtnText="Acessar Conta"
-    (navigate)="navigateToLogin()"
-    (submit)="submit()"
-    [disablePrimaryBtn]="!signupForm.valid"
+  title="Registre sua conta para começar!"
+  primaryBtnText="Registrar Agora"
+  secondaryBtnText="Acessar Conta"
+  (navigate)="navigateToLogin()"
+  (submit)="submit()"
+  [disablePrimaryBtn]="isSubmitting || !signupForm.valid"
 >
-    <form [formGroup]="signupForm" (keydown.enter)="submit()">
-        <app-primary-input
-            formControlName="name"
-            inputName="name"
-            type="text"
-            label="Seu nome"
-            placeholder="Emerson Machado"
-        >
-            <img src="./assets/svg/email-icon.svg"/>
-        </app-primary-input>
-        <app-primary-input
-            formControlName="email"
-            inputName="email"
-            type="email"
-            label="E-mail"
-            placeholder="emersonoliveira@gmail.com"
-        >
-            <img src="./assets/svg/email-icon.svg"/>
-        </app-primary-input>
-        <app-primary-input
-            formControlName="password"
-            inputName="password"
-            type="password"
-            label="Sua senha"
-        >
-        <img src="./assets/svg/password-icon.svg"/>
-    </app-primary-input>
-    <app-primary-input
-        formControlName="passwordConfirm"
-        inputName="passwordConfirm"
-        type="password"
-        label="Confirme sua senha"
-    >
-        <img src="./assets/svg/password-icon.svg"/>
-    </app-primary-input>
-    </form>
-</app-default-login-layout>
+  <form [formGroup]="signupForm" (keydown.enter)="submit()">
 
+    <!-- Campo Nome -->
+    <app-primary-input
+      formControlName="name"
+      inputName="name"
+      type="text"
+      label="Seu nome"
+      placeholder="Emerson Machado"
+    >
+      <img src="./assets/svg/user-icon.svg" alt="Ícone de usuário"/>
+    </app-primary-input>
+
+    <!-- Campo Email -->
+    <app-primary-input
+      formControlName="email"
+      inputName="email"
+      type="email"
+      label="E-mail"
+      placeholder="emersonoliveira@gmail.com"
+    >
+      <img src="./assets/svg/email-icon.svg" alt="Ícone de email"/>
+    </app-primary-input>
+
+    <!-- Campo Senha -->
+    <app-primary-input
+      formControlName="password"
+      inputName="password"
+      type="password"
+      label="Sua senha"
+    >
+      <img src="./assets/svg/password-icon.svg" alt="Ícone de senha"/>
+    </app-primary-input>
+
+    <!-- Campo Confirmar Senha -->
+    <app-primary-input
+      formControlName="passwordConfirm"
+      inputName="passwordConfirm"
+      type="password"
+      label="Confirme sua senha"
+    >
+      <img src="./assets/svg/password-icon.svg" alt="Ícone de senha"/>
+    </app-primary-input>
+
+  </form>
+</app-default-login-layout>
