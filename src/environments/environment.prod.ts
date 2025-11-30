@@ -1,5 +1,6 @@
+// typescript (file: `src/environments/environment.prod.ts`)
 export const environment = {
-  production: false,
-  apiBaseUrl: 'http://localhost:8080', // Base URL for API calls in development
-  authApiUrl: 'http://localhost:8081/auth', // Authentication API URL
+  production: true,
+  apiBaseUrl: 'http://your-backend-host:8080', // set to backend reachable by packaged app
+  authApiUrl: 'http://your-backend-host:8081/auth'
 };
