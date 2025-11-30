@@ -32,18 +32,64 @@ main {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
+        padding-top: 3rem;
+        width: 100%;
+        max-width: 500px;
 
-        img {
-            width: 180px;
-            margin-bottom: 30px;
+        .logo-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px;
+            
+            img {
+                width: 280px;
+                max-width: 90%;
+                height: auto;
+                display: block;
+                object-fit: contain;
+            }
         }
 
         h2 {
             font-size: 20px;
             font-weight: bold;
-            margin-bottom: 45px;
+            margin-bottom: 35px;
             color: $text-color;
+            text-align: center;
+            width: 100%;
+        }
+
+        form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 24px;
+            margin-bottom: 0;
+        }
+
+        ::ng-deep {
+            app-primary-input {
+                width: 100%;
+                margin-bottom: 0;
+            }
+
+            form span {
+                font-size: 14px;
+                text-decoration: underline;
+                color: $secondary-color;
+                text-align: end;
+                cursor: pointer;
+                transition: color 0.2s ease;
+                margin-top: -8px;
+
+                &:hover {
+                    color: darken($secondary-color, 10%);
+                }
+            }
         }
 
         .btn-wrapper {
@@ -53,7 +99,7 @@ main {
             justify-content: center;
             width: 100%;
             gap: 30px;
-            margin-top: 1rem;
+            margin-top: 2rem;
 
             .divider {
                 display: flex;
@@ -63,14 +109,14 @@ main {
                 width: 100%;
 
                 font-size: 14px;
-                color: $gray-bg;
+                color: #9CA3AF;
                 font-weight: 400;
                 text-transform: uppercase;
 
                 div {
                     flex-grow: 1;
                     height: 2px;
-                    background-color: $gray-bg;
+                    background-color: #E5E7EB;
                 }
             }
 
@@ -93,7 +139,7 @@ main {
                 &.btn-primary {
                     background-color: $primary-color;
                     color: white;
-                    box-shadow: 0px 8px 12px rgba(126, 217, 87, 0.2);
+                    box-shadow: 0px 8px 12px rgba(0, 87, 183, 0.2);
 
                     &:hover:not(:disabled) {
                         background-color: darken($primary-color, 5%);
@@ -106,7 +152,7 @@ main {
                     color: $primary-color;
 
                     &:hover {
-                        background: rgba(126, 217, 87, 0.1);
+                        background: rgba(0, 87, 183, 0.1);
                     }
                 }
             }
@@ -120,6 +166,21 @@ main {
             flex: 0 0 auto;
             width: 100%;
             order: 1;
+            padding: 1.5rem;
+            padding-top: 2rem;
+
+            .logo-container {
+                margin-bottom: 30px;
+            }
+
+            img {
+                width: 240px;
+            }
+
+            h2 {
+                font-size: 18px;
+                margin-bottom: 30px;
+            }
         }
 
         .main-section {

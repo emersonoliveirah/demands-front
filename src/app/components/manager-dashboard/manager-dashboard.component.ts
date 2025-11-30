@@ -156,4 +156,31 @@ export class ManagerDashboardComponent implements OnInit {
       // Não alteramos loadingDemands aqui, pois não está carregando
     }
   }
+
+  // Métodos para estatísticas
+  getTotalSubordinates(): number {
+    return this.subordinatesWithState?.length || 0;
+  }
+
+  getTotalDemands(): number {
+    return this.subordinatesWithState?.reduce((total, sub) => {
+      return total + (sub.demands?.length || 0);
+    }, 0) || 0;
+  }
+
+  getActiveDemands(): number {
+    return this.subordinatesWithState?.reduce((total, sub) => {
+      if (!sub.demands) return total;
+      return total + sub.demands.filter(d => 
+        d.status === 'OPEN' || d.status === 'IN_PROGRESS' || d.status === 'PAUSED'
+      ).length;
+    }, 0) || 0;
+  }
+
+  getCompletedDemands(): number {
+    return this.subordinatesWithState?.reduce((total, sub) => {
+      if (!sub.demands) return total;
+      return total + sub.demands.filter(d => d.status === 'CLOSED').length;
+    }, 0) || 0;
+  }
 }
