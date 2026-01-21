@@ -259,4 +259,20 @@ export class DemandsPageComponent implements OnInit {
   navigateToManagerDashboard(): void {
     this.router.navigate(['/manager-dashboard']);
   }
+
+  openDatePicker(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    // Tenta usar a API showPicker() se disponível (navegadores modernos)
+    if (input && typeof (input as any).showPicker === 'function') {
+      try {
+        (input as any).showPicker();
+      } catch (error) {
+        // Se showPicker() falhar, foca no input para permitir digitação
+        input.focus();
+      }
+    } else {
+      // Fallback: foca no input
+      input.focus();
+    }
+  }
 }

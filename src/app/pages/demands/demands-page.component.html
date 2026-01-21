@@ -169,7 +169,7 @@
         <div class="form-row">
           <div class="form-group">
             <label for="startDate">Data Início</label>
-            <input id="startDate" type="datetime-local" class="datetime-input" formControlName="startDate" />
+            <input id="startDate" type="datetime-local" class="datetime-input" formControlName="startDate" (click)="openDatePicker($event)" />
             <span class="error" *ngIf="demandForm.get('startDate')?.errors?.['required'] && demandForm.get('startDate')?.touched">
               Data início é obrigatória
             </span>
@@ -177,7 +177,7 @@
 
           <div class="form-group">
             <label for="endDate">Data Fim</label>
-            <input id="endDate" type="datetime-local" class="datetime-input" formControlName="endDate" />
+            <input id="endDate" type="datetime-local" class="datetime-input" formControlName="endDate" (click)="openDatePicker($event)" />
             <span class="error" *ngIf="demandForm.get('endDate')?.errors?.['required'] && demandForm.get('endDate')?.touched">
               Data fim é obrigatória
             </span>
